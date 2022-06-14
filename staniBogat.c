@@ -15,94 +15,94 @@ typedef struct{
     char correctAnswer;
 } Question;
 
-int questionsToFile(Question *questions, FILE *fp){
-    int len = 0;
-    while(len < MAX_NUM_QUESTIONS){
-        fprintf(fp, "%d\n", questions[len].dificulty);
-        fprintf(fp, "%s\n", questions[len].question);
-        fprintf(fp, "%s\n", questions[len].answerA);
-        fprintf(fp, "%s\n", questions[len].answerB);
-        fprintf(fp, "%s\n", questions[len].answerC);
-        fprintf(fp, "%s\n", questions[len].answerD);
-        fprintf(fp, "%c\n", questions[len].correctAnswer);
-        len++;
-        
-        if(strcmp(questions[len].answerA, "")){
-            break;
-        }
+void questionsToFile(Question *questions, FILE *fp, int numOfQuestions){
+    questions = malloc(sizeof(Question)*numOfQuestions);
+    for(int i = 0; i < numOfQuestions; i++){
+        fprintf(fp, "%d\n", questions[i].dificulty);
+        fprintf(fp, "%s\n", questions[i].question);
+        fprintf(fp, "%s\n", questions[i].answerA);
+        fprintf(fp, "%s\n", questions[i].answerB);
+        fprintf(fp, "%s\n", questions[i].answerC);
+        fprintf(fp, "%s\n", questions[i].answerD);
+        fprintf(fp, "%c\n", questions[i].correctAnswer);
     }
+    
 }
 
-int enterQuestion(Question q){
 
-    char dificulty[MAX_LINE_LEN];
-    printf("Enter the difficulty of the question: \n");
-    scanf("%s", dificulty);
-    if(isdigit(dificulty[0])){
-        printf("\n");
-    }
-    else{
-        printf("Value of difficulty must be a number!");
-        return 1;
-    }
+int enterQuestion(Question *q, int numOfQuestions){
+
+    q = malloc(sizeof(Question)*numOfQuestions);
+    
+    for(int i = 0; i < numOfQuestions; i++){
+        char dificulty[MAX_LINE_LEN];
+        printf("Enter the difficulty of the question: \n");
+        scanf("%s", dificulty);
+        if(isdigit(dificulty[0])){
+            printf("\n");
+        }
+        else{
+            printf("Value of difficulty must be a number!");
+            return 1;
+        }
     // printf("%d", isdigit(dificulty));
     // if(isdigit(dificulty)){}
     // else{
     //     printf("Value of difficulty must be a number!");
     //     return 1;
     // }
-    q.dificulty = atoi(dificulty);
+        q[i].dificulty = atoi(dificulty);
 
-    char question[MAX_LINE_LEN];
-    printf("Enter the question: ");
-    scanf("%s", question);
-    strcpy(q.question, question);
+        char question[MAX_LINE_LEN];
+        printf("Enter the question: ");
+        scanf("%s", question);
+        strcpy(q[i].question, question);
 
-    char answerA[MAX_LINE_LEN];
-    printf("Enter answer A: ");
-    scanf("%s", answerA);
-    strcpy(q.answerA, answerA);
+        char answerA[MAX_LINE_LEN];
+        printf("Enter answer A: ");
+        scanf("%s", answerA);
+        strcpy(q[i].answerA, answerA);
 
-    char answerB[MAX_LINE_LEN];
-    printf("Enter answer B: ");
-    scanf("%s", answerB);
-    strcpy(q.answerB, answerB);
+        char answerB[MAX_LINE_LEN];
+        printf("Enter answer B: ");
+        scanf("%s", answerB);
+        strcpy(q[i].answerB, answerB);
 
-    char answerC[MAX_LINE_LEN];
-    printf("Enter answer C: ");
-    scanf("%s", answerC);
-    strcpy(q.answerC, answerC);
+        char answerC[MAX_LINE_LEN];
+        printf("Enter answer C: ");
+        scanf("%s", answerC);
+        strcpy(q[i].answerC, answerC);
 
-    char answerD[MAX_LINE_LEN];
-    printf("Enter answer D: ");
-    scanf("%s", answerD);
-    strcpy(q.answerD, answerD);
+        char answerD[MAX_LINE_LEN];
+        printf("Enter answer D: ");
+        scanf("%s", answerD);
+        strcpy(q[i].answerD, answerD);
 
-    char correctAnswer[MAX_LINE_LEN];
-    printf("Enter the letter of the correct answer: ");
-    scanf("%s", correctAnswer);
-    q.correctAnswer = correctAnswer[0];    
+        char correctAnswer[MAX_LINE_LEN];
+        printf("Enter the letter of the correct answer: ");
+        scanf("%s", correctAnswer);
+        q[i].correctAnswer = correctAnswer[0];    
+        }
     
 }
 
 int main(){
-    FILE *fp = fopen("questions.txt", "a"); 
+    FILE *fp = fopen("questions.txt", "w+"); 
     
     if(fp == NULL){
         printf("Cannot open questions file.");
         return 1;
     }
-    Question questions[MAX_NUM_QUESTIONS];
+    int numOfQuestions = 1;
+    Question questions[numOfQuestions];
+    enterQuestion(questions, numOfQuestions);
 
-    Question q1;
-    enterQuestion(q1);
-    questions[0] = q1;
 
     // Question q2;
     // enterQuestion(q2);
     // questions[1] = q2;
     printf("%s", questions[0].answerA);
-    questionsToFile(questions, fp);
+    questionsToFile(questions, fp, numOfQuestions);
 
     // char difficulty[MAX_LINE_LEN];
     // int numOfQuestons = 1;
