@@ -16,7 +16,7 @@ typedef struct{
 } Question;
 
 void questionsToFile(Question *questions, FILE *fp, int numOfQuestions){
-    questions = malloc(sizeof(Question)*numOfQuestions);
+   
     for(int i = 0; i < numOfQuestions; i++){
         fprintf(fp, "%d\n", questions[i].dificulty);
         fprintf(fp, "%s\n", questions[i].question);
@@ -25,14 +25,13 @@ void questionsToFile(Question *questions, FILE *fp, int numOfQuestions){
         fprintf(fp, "%s\n", questions[i].answerC);
         fprintf(fp, "%s\n", questions[i].answerD);
         fprintf(fp, "%c\n", questions[i].correctAnswer);
+
     }
     
 }
 
-
 int enterQuestion(Question *q, int numOfQuestions){
 
-    q = malloc(sizeof(Question)*numOfQuestions);
     
     for(int i = 0; i < numOfQuestions; i++){
         char dificulty[MAX_LINE_LEN];
@@ -45,18 +44,14 @@ int enterQuestion(Question *q, int numOfQuestions){
             printf("Value of difficulty must be a number!");
             return 1;
         }
-    // printf("%d", isdigit(dificulty));
-    // if(isdigit(dificulty)){}
-    // else{
-    //     printf("Value of difficulty must be a number!");
-    //     return 1;
-    // }
+
         q[i].dificulty = atoi(dificulty);
 
         char question[MAX_LINE_LEN];
         printf("Enter the question: ");
         scanf("%s", question);
         strcpy(q[i].question, question);
+      
 
         char answerA[MAX_LINE_LEN];
         printf("Enter answer A: ");
@@ -94,14 +89,15 @@ int main(){
         return 1;
     }
     int numOfQuestions = 1;
-    Question questions[numOfQuestions];
+    Question *questions = malloc(sizeof(Question)*numOfQuestions);
     enterQuestion(questions, numOfQuestions);
 
 
     // Question q2;
     // enterQuestion(q2);
     // questions[1] = q2;
-    printf("%s", questions[0].answerA);
+    printf("\n %d \n", questions[0].dificulty);
+
     questionsToFile(questions, fp, numOfQuestions);
 
     // char difficulty[MAX_LINE_LEN];
