@@ -15,6 +15,8 @@ typedef struct{
     char correctAnswer;
 } Question;
 
+
+
 void questionsToFile(Question *questions, FILE *fp, int numOfQuestions){
    
     for(int i = 0; i < numOfQuestions; i++){
@@ -34,43 +36,50 @@ int enterQuestion(Question *q, int numOfQuestions){
 
     
     for(int i = 0; i < numOfQuestions; i++){
-        char dificulty[MAX_LINE_LEN];
-        printf("Enter the difficulty of the question: \n");
-        scanf("%s", dificulty);
-        if(isdigit(dificulty[0])){
-            printf("\n");
-        }
-        else{
-            printf("Value of difficulty must be a number!");
-            return 1;
-        }
+        // char dificulty[MAX_LINE_LEN];
+        // printf("Enter the difficulty of the question: \n");
+        // scanf("%s", dificulty);
+        // if(isdigit(dificulty[0])){
+        //     printf(" ");
+        // }
+        // else{
+        //     printf("Value of difficulty must be a number!");
+        //     return 1;
+        // }
 
-        q[i].dificulty = atoi(dificulty);
+        // q[i].dificulty = atoi(dificulty);
 
-        char question[MAX_LINE_LEN];
+        char question[MAX_LINE_LEN] = {0};
         printf("Enter the question: ");
-        scanf("%s", question);
+        // char *question = malloc(sizeof(char)*MAX_LINE_LEN);
+        scanf("%[^\n]s", question);
+        getchar();
         strcpy(q[i].question, question);
+
       
 
         char answerA[MAX_LINE_LEN];
         printf("Enter answer A: ");
-        scanf("%s", answerA);
+        scanf("%[^\n]s", answerA);
+        getchar();
         strcpy(q[i].answerA, answerA);
 
         char answerB[MAX_LINE_LEN];
         printf("Enter answer B: ");
-        scanf("%s", answerB);
+        scanf("%[^\n]s", answerB);
+        getchar();
         strcpy(q[i].answerB, answerB);
 
         char answerC[MAX_LINE_LEN];
         printf("Enter answer C: ");
-        scanf("%s", answerC);
+        scanf("%[^\n]s", answerC);
+        getchar();
         strcpy(q[i].answerC, answerC);
 
         char answerD[MAX_LINE_LEN];
         printf("Enter answer D: ");
-        scanf("%s", answerD);
+        scanf("%[^\n]s", answerD);
+        getchar();
         strcpy(q[i].answerD, answerD);
 
         char correctAnswer[MAX_LINE_LEN];
@@ -96,7 +105,7 @@ int main(){
     // Question q2;
     // enterQuestion(q2);
     // questions[1] = q2;
-    printf("\n %d \n", questions[0].dificulty);
+    //printf("\n %d \n", questions[0].dificulty);
 
     questionsToFile(questions, fp, numOfQuestions);
 
@@ -133,6 +142,7 @@ int main(){
     //     strcpy(currentQuestion.correctAnswer, correctAnswer[1]);
         
     // }
+
     fclose(fp);
     return 0;
 }
