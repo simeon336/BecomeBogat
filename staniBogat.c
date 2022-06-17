@@ -6,7 +6,7 @@
 #define MAX_NUM_QUESTIONS 100
 
 typedef struct{
-    int dificulty;
+    char difficulty[MAX_LINE_LEN];
     char question[MAX_LINE_LEN];
     char answerA[MAX_LINE_LEN];
     char answerB[MAX_LINE_LEN];
@@ -20,7 +20,7 @@ typedef struct{
 void questionsToFile(Question *questions, FILE *fp, int numOfQuestions){
    
     for(int i = 0; i < numOfQuestions; i++){
-        fprintf(fp, "%d\n", questions[i].dificulty);
+        fprintf(fp, "%s\n", questions[i].difficulty);
         fprintf(fp, "%s\n", questions[i].question);
         fprintf(fp, "%s\n", questions[i].answerA);
         fprintf(fp, "%s\n", questions[i].answerB);
@@ -36,18 +36,11 @@ int enterQuestion(Question *q, int numOfQuestions){
 
     
     for(int i = 0; i < numOfQuestions; i++){
-        // char dificulty[MAX_LINE_LEN];
-        // printf("Enter the difficulty of the question: \n");
-        // scanf("%s", dificulty);
-        // if(isdigit(dificulty[0])){
-        //     printf(" ");
-        // }
-        // else{
-        //     printf("Value of difficulty must be a number!");
-        //     return 1;
-        // }
-
-        // q[i].dificulty = atoi(dificulty);
+        char difficulty[MAX_LINE_LEN];
+        printf("Enter difficulty of the question: ");
+        scanf("%s", difficulty);
+        getchar();
+        strcpy(q[i].difficulty, difficulty);
 
         char question[MAX_LINE_LEN] = {0};
         printf("Enter the question: ");
