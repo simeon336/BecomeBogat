@@ -1,7 +1,0 @@
-1
-Kolko vreme mi otne da scanf-vam sus space?
-1 chas
-1 den
-3 dena
-4 chasa
-C
