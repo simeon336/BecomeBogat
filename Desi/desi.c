@@ -17,18 +17,25 @@ typedef struct{
 
 
 
-void questionsToFile(Question *questions, FILE *fp, int numOfQuestions){
+void questionsToFile(Question questions[][100], FILE *fp, int numOfQuestions, int trudnost[]){
+    
 
-    for(int i = 0; i < numOfQuestions; i++){
-        fprintf(fp, "%s\n", questions[i].difficulty);
-        fprintf(fp, "%s\n", questions[i].question);
-        fprintf(fp, "%s\n", questions[i].answerA);
-        fprintf(fp, "%s\n", questions[i].answerB);
-        fprintf(fp, "%s\n", questions[i].answerC);
-        fprintf(fp, "%s\n", questions[i].answerD);
-        fprintf(fp, "%c\n", questions[i].correctAnswer);
+    for(int i = 0; i < 10; i++){
+        if(trudnost[i] != 0){
+            for(int y = 0; y < trudnost[i]; y++){
+            fprintf(fp, "%s\n", questions[i][y].difficulty);
+            fprintf(fp, "%s\n", questions[i][y].question);
+            fprintf(fp, "%s\n", questions[i][y].answerA);
+            fprintf(fp, "%s\n", questions[i][y].answerB);
+            fprintf(fp, "%s\n", questions[i][y].answerC);
+            fprintf(fp, "%s\n", questions[i][y].answerD);
+            fprintf(fp, "%c\n", questions[i][y].correctAnswer);
 
+            }
+        }
+        
     }
+
 
 }
 
@@ -41,7 +48,7 @@ int enterQuestion(Question q[][100], int i[]){
         scanf("%s", difficulty);
         getchar();
         //int key = atoi(difficulty.c_str());
-        int key = atoi(difficulty);
+        int key = atoi(difficulty)-1;
         strcpy(q[key][i[key]].difficulty, difficulty); //ne raboti
 
 
@@ -100,8 +107,9 @@ int main(){
         printf("Cannot open questions file.");
         return 1;
     }
-    int numOfQuestions = 1;
+    int numOfQuestions = 2;
     //Question *questions = malloc(sizeof(Question)*numOfQuestions);
+    enterQuestion(questions, i);
     enterQuestion(questions, i);
 
 
@@ -110,41 +118,9 @@ int main(){
     // questions[1] = q2;
     //printf("\n %d \n", questions[0].dificulty);
 
-    questionsToFile(questions, fp, numOfQuestions);
+    questionsToFile(questions, fp, numOfQuestions, i);
 
-    // char difficulty[MAX_LINE_LEN];
-    // int numOfQuestons = 1;
-    // Question *questions = malloc(sizeof(Question)*numOfQuestons);
 
-    // while(fgets(difficulty, MAX_LINE_LEN-1, fp) != NULL){
-    //     Question currentQuestion;
-    //     currentQuestion.dificulty = atoi(difficulty);
-
-    //     char question[MAX_LINE_LEN];
-    //     fgets(question, MAX_LINE_LEN-1, fp);
-    //     strcpy(currentQuestion.question, question);
-
-    //     char answerA[MAX_LINE_LEN];
-    //     fgets(answerA, MAX_LINE_LEN-1, fp);
-    //     strcpy(currentQuestion.answerA, answerA);
-
-    //     char answerB[MAX_LINE_LEN];
-    //     fgets(answerB, MAX_LINE_LEN-1, fp);
-    //     strcpy(currentQuestion.answerB, answerB);
-
-    //     char answerC[MAX_LINE_LEN];
-    //     fgets(answerC, MAX_LINE_LEN-1, fp);
-    //     strcpy(currentQuestion.answerC, answerC);
-
-    //     char answerD[MAX_LINE_LEN];
-    //     fgets(answerD, MAX_LINE_LEN-1, fp);
-    //     strcpy(currentQuestion.answerD, answerD);
-
-    //     char correctAnswer[MAX_LINE_LEN];
-    //     fgets(correctAnswer, MAX_LINE_LEN-1, fp);
-    //     strcpy(currentQuestion.correctAnswer, correctAnswer[1]);
-
-    // }
 
     fclose(fp);
     return 0;
