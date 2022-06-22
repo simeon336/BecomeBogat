@@ -2,27 +2,60 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-// void questionsToFile(Question questions[][100], FILE *fp, int numOfQuestions, int trudnost[]){
+
+void addQuestion(struct Node **questions, Question *currentQuestion){
+        struct Node *node = malloc(sizeof(struct Node));
+        node->next = NULL;
+        node->question = currentQuestion;
+        if(questions[currentQuestion->difficulty-1] == NULL){
+            questions[currentQuestion->difficulty-1] = node;
+        } else{
+            struct Node *lastNode = questions[currentQuestion->difficulty-1];
+            while(lastNode->next != NULL){
+                lastNode = lastNode->next;
+            }
+            lastNode->next = node;
+        }
+}
+
+struct Node **initHashTable(){
+    struct Node **questions = malloc(sizeof(struct Node*)*10);
+
+    for(int i = 0; i < 10; i++){
+        questions[i] = NULL;
+    }
+    return questions;  
+}
+
+void writeQuestionToFile(Question *question, FILE *fp){
+    fprintf(fp, "%d\n", question->difficulty);
+    fprintf(fp, "%s\n", question->question);
+    fprintf(fp, "%s\n", question->answerA);
+    fprintf(fp, "%s\n", question->answerB);
+    fprintf(fp, "%s\n", question->answerC);
+    fprintf(fp, "%s\n", question->answerD);
+    fprintf(fp, "%c\n", question->correctAnswer);
+}
+
+bool writeToFile(struct Node **questions, char* fileName){
+    FILE *fp = fopen(fileName, "w");
+
+    if(fp == NULL){
+        printf("Cannot open questions file.");
+        return false;
+    }
     
+    for(int i = 0; i < 10; i++){
+        struct Node *currentNode = questions[i];
+        while(currentNode != NULL){
+            writeQuestionToFile(currentNode->question, fp);
+            currentNode = currentNode->next;
+        }
+    }
+    fclose(fp);
+    return true;
+}
 
-//     for(int i = 0; i < 10; i++){
-//         if(trudnost[i] != 0){
-//             for(int y = 0; y < trudnost[i]; y++){
-//             fprintf(fp, "%s\n", questions[i][y].difficulty);
-//             fprintf(fp, "%s\n", questions[i][y].question);
-//             fprintf(fp, "%s\n", questions[i][y].answerA);
-//             fprintf(fp, "%s\n", questions[i][y].answerB);
-//             fprintf(fp, "%s\n", questions[i][y].answerC);
-//             fprintf(fp, "%s\n", questions[i][y].answerD);
-//             fprintf(fp, "%c\n", questions[i][y].correctAnswer);
-
-//             }
-//         }
-        
-//     }
-
-
-// }
 void removeNewLine(char* string){
     char *p = strchr(string, '\n');
     if(p != NULL){
@@ -38,12 +71,8 @@ struct Node **readQuestions(char *fileName){
     }
 
     char difficulty[MAX_LINE_LEN];
-    struct Node **questions = malloc(sizeof(struct Node*)*10);
+    struct Node **questions = initHashTable();
 
-    for(int i = 0; i < 10; i++){
-        questions[i] = NULL;
-    }
-    
     while(fgets(difficulty, MAX_LINE_LEN-1, fp) != NULL){
         Question *currentQuestion = malloc(sizeof(Question));
         removeNewLine(difficulty);
@@ -79,78 +108,61 @@ struct Node **readQuestions(char *fileName){
         removeNewLine(correctAnswer);
         currentQuestion->correctAnswer = correctAnswer[0];
 
-        struct Node *node = malloc(sizeof(struct Node));
-        node->next = NULL;
-        node->question = currentQuestion;
-        if(questions[currentQuestion->difficulty-1] == NULL){
-            questions[currentQuestion->difficulty-1] = node;
-        } else{
-            struct Node *lastNode = questions[currentQuestion->difficulty-1];
-            while(lastNode->next != NULL){
-                lastNode = lastNode->next;
-            }
-            lastNode->next = node;
-        }
+        addQuestion(questions, currentQuestion);
     }
-
+    fclose(fp);
     return questions;
-
+    
 }
 
-// int enterQuestion(Question q[][100], int i[]){
+Question *enterQuestion(){
+        Question *question = malloc(sizeof(Question));
+        int difficulty;
+        printf("Enter dificulty: ");
+        scanf("%d", &difficulty);
+        getchar();
+        question->difficulty = difficulty;
 
-//         //int key;
+        char *currentQuestion = malloc(sizeof(char)*MAX_LINE_LEN);
+        printf("Enter the question: ");
+        size_t size = MAX_LINE_LEN;
+        getline(&currentQuestion, &size, stdin);
+        removeNewLine(currentQuestion);
+        strcpy(question->question, currentQuestion);
 
-//         char difficulty[MAX_LINE_LEN];
-//         printf("Enter difficulty of the question: ");
-//         scanf("%s", difficulty);
-//         getchar();
-//         //int key = atoi(difficulty.c_str());
-//         int key = atoi(difficulty)-1;
-//         strcpy(q[key][i[key]].difficulty, difficulty); //ne raboti
+        char *answerA = malloc(sizeof(char)*MAX_LINE_LEN);
+        printf("Enter answer A: ");
+        getline(&answerA, &size, stdin);
+        removeNewLine(answerA);
+        strcpy(question->answerA, answerA);
 
+        char *answerB = malloc(sizeof(char)*MAX_LINE_LEN);
+        printf("Enter answer B: ");
+        getline(&answerB, &size, stdin);
+        removeNewLine(answerB);
+        strcpy(question->answerB, answerB);
 
+        char *answerC = malloc(sizeof(char)*MAX_LINE_LEN);
+        printf("Enter answer C: ");
+        getline(&answerC, &size, stdin);
+        removeNewLine(answerC);
+        strcpy(question->answerC, answerC);
 
-//         char question[MAX_LINE_LEN] = {0};
-//         printf("Enter the question: ");
-//         // char *question = malloc(sizeof(char)*MAX_LINE_LEN);
-//         scanf("%[^\n]s", question);
-//         getchar();
-//         strcpy(q[key][i[key]].question, question);
+        char *answerD = malloc(sizeof(char)*MAX_LINE_LEN);
+        printf("Enter answer D: ");
+        getline(&answerD, &size, stdin);
+        removeNewLine(answerD);
+        strcpy(question->answerD, answerD);
 
+        char *correctAnswer = malloc(sizeof(char)*MAX_LINE_LEN);
+        printf("Enter the letter of the correct answer: ");
+        getline(&correctAnswer, &size, stdin);
+        removeNewLine(correctAnswer);
+        question->correctAnswer = correctAnswer[0];
 
+        return question;
+}
 
-//         char answerA[MAX_LINE_LEN];
-//         printf("Enter answer A: ");
-//         scanf("%[^\n]s", answerA);
-//         getchar();
-//         strcpy(q[key][i[key]].answerA, answerA);
-
-//         char answerB[MAX_LINE_LEN];
-//         printf("Enter answer B: ");
-//         scanf("%[^\n]s", answerB);
-//         getchar();
-//         strcpy(q[key][i[key]].answerB, answerB);
-
-//         char answerC[MAX_LINE_LEN];
-//         printf("Enter answer C: ");
-//         scanf("%[^\n]s", answerC);
-//         getchar();
-//         strcpy(q[key][i[key]].answerC, answerC);
-
-//         char answerD[MAX_LINE_LEN];
-//         printf("Enter answer D: ");
-//         scanf("%[^\n]s", answerD);
-//         getchar();
-//         strcpy(q[key][i[key]].answerD, answerD);
-
-//         char correctAnswer[MAX_LINE_LEN];
-//         printf("Enter the letter of the correct answer: ");
-//         scanf("%s", correctAnswer);
-//         q[key][i[key]].correctAnswer = correctAnswer[0];
-
-//         i[key]++;
-// }
 void printQuestion(Question *question){
     printf("%d\n", question->difficulty);
     printf("%s\n", question->question);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #define MAX_LINE_LEN 256
 #define MAX_NUM_QUESTIONS 100
@@ -19,9 +20,11 @@ struct Node{
     Question *question;
     struct Node *next;
 };
-
-// void questionsToFile(Question questions[][100], FILE *fp, int numOfQuestions, int trudnost[]);
-// int enterQuestion(Question q[][100], int i[]);
+struct Node **initHashTable();
+bool writeToFile(struct Node **questions, char* fileName);
+void writeQuestionToFile(Question *question, FILE *fp);
+void addQuestion(struct Node **questions, Question *currentQuestion);
+Question* enterQuestion();
 void removeNewLine(char* string);
 struct Node **readQuestions(char *fileName);
 void printQuestion(Question *question);
