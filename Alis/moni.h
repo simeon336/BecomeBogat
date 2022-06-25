@@ -14,6 +14,9 @@ typedef struct{
     char answerC[MAX_LINE_LEN];
     char answerD[MAX_LINE_LEN];
     char correctAnswer;
+    bool joker1;
+    bool joker2;
+    bool joker3;
 } Question;
 
 struct Node{

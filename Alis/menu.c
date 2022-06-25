@@ -10,12 +10,12 @@
 void printMenu(int position);
 void menu();
 void arrowhere(int realPosition, int arrowPosition);
-void polovine();
-char helpFromFriend(Question currentQuestion);
-char helpFromPublic(Question currentQuestion);
+void polovine(Question *currentQuestion);
+char helpFromFriend(Question *currentQuestion);
+char helpFromPublic(Question *currentQuestion);
 void helpingFunction(Question currentQuestion, int first, int second, int third, int fourth);
 void startGame();
-struct Node **chose10Questions(struct Node **questions, struct Node **chosenQuestions);
+struct Node **chose10Questions(struct Node **questions);
 
 
 void printMenu(int position){
@@ -78,7 +78,7 @@ void arrowhere(int realPosition, int arrowPosition){
     }
 }
 
-void polovin(Question currentQuestion){
+void polovin(Question *currentQuestion){
     srand(time(0));
     int firstQ = rand() % 3;
     int secondQ = rand() % 3;
@@ -89,7 +89,7 @@ void polovin(Question currentQuestion){
             secondQ --;
         }
     }
-    if(currentQuestion.correctAnswer == 'A'){
+    if(currentQuestion->correctAnswer == 'A'){
         if(firstQ == 0){
             //mahni 4 otgovor ot printiraneto
             //mahni firstQ otgovor ot printiraneto
@@ -97,7 +97,7 @@ void polovin(Question currentQuestion){
             //mahni firstQ otgovor ot printiraneto
             //mahni secondQ otgovor ot printiraneto
         }
-    }else if(currentQuestion.correctAnswer == 'B'){
+    }else if(currentQuestion->correctAnswer == 'B'){
         if(firstQ == 1){
             //mahni 4 otgovor ot printiraneto
             //mahni firstQ otgovor ot printiraneto
@@ -105,7 +105,7 @@ void polovin(Question currentQuestion){
             //mahni firstQ otgovor ot printiraneto
             //mahni secondQ otgovor ot printiraneto
         }
-    }else if(currentQuestion.correctAnswer == 'c'){
+    }else if(currentQuestion->correctAnswer == 'c'){
         if(firstQ == 2){
             //mahni 4 otgovor ot printiraneto
             //mahni firstQ otgovor ot printiraneto
@@ -119,24 +119,24 @@ void polovin(Question currentQuestion){
     }
 }
 
-char helpFromFriend(Question currentQuestion){
+char helpFromFriend(Question *currentQuestion){
     srand(time(0));
     int chance = rand() % 100;
-    int difficulty = currentQuestion.difficulty;
+    int difficulty = currentQuestion->difficulty;
 
     if(chance < 80 && difficulty <= 3){
-        return currentQuestion.correctAnswer;
+        return currentQuestion->correctAnswer;
     }
     else if(chance < 60 && difficulty <= 6 && difficulty >= 4){
-        return currentQuestion.correctAnswer;
+        return currentQuestion->correctAnswer;
     }
     else if(chance < 30 && difficulty <= 10 && difficulty >= 7){
-        return currentQuestion.correctAnswer;
+        return currentQuestion->correctAnswer;
     }
     else{
         int intResult = rand() % 3;
         char result;
-        if(intResult == atoi(&currentQuestion.correctAnswer)){
+        if(intResult == atoi(&currentQuestion->correctAnswer)){
             if(intResult == 0){
                 intResult++;
                 result = intResult + '0';
@@ -149,28 +149,28 @@ char helpFromFriend(Question currentQuestion){
     }
 }
 
-char helpFromPublic(Question currentQuestion){
+char helpFromPublic(Question *currentQuestion){
     srand(time(0));
     int first = rand() % 101;
     int second = rand() % (101 - first);
     int third = rand() % (101 - first - second);
     int fourth = 100 - first - second - third;
     int chance = rand() % 100;
-    int difficulty = currentQuestion.difficulty;
+    int difficulty = currentQuestion->difficulty;
 
     if(chance < 80 && difficulty <= 3){
-        return currentQuestion.correctAnswer;
+        return currentQuestion->correctAnswer;
     }
     else if(chance < 60 && difficulty <= 6 && difficulty >= 4){
-        return currentQuestion.correctAnswer;
+        return currentQuestion->correctAnswer;
     }
     else if(chance < 30 && difficulty <= 10 && difficulty >= 7){
-        return currentQuestion.correctAnswer;
+        return currentQuestion->correctAnswer;
     }
     else{
         int intResult = rand() % 3;
         char result;
-        if(intResult == atoi(&currentQuestion.correctAnswer)){
+        if(intResult == atoi(&currentQuestion->correctAnswer)){
             if(intResult == 0){
                 intResult++;
                 result = intResult + '0';
@@ -266,54 +266,54 @@ void helpingFunction(Question currentQuestion, int first, int second, int third,
     }
 }
 
-void startGame(){
-    struct Node **questions = chose10Questions();
+void startGame(struct Node **questions){
+    struct Node **choceQuestions = chose10Questions(questions);
     int choice;
     for(int i = 0; i < 10; i++){
-        printf("%d. %s \n", i, questions[i]->question->question);
-        printf("A. %s \n", questions[i]->question->answerA);
-        printf("B. %s \n", questions[i]->question->answerB);
-        printf("C. %s \n", questions[i]->question->answerC);
-        printf("D. %s \n", questions[i]->question->answerD);
+        printf("%d. %s \n", i, choceQuestions[i]->question->question);
+        printf("A. %s \n", choceQuestions[i]->question->answerA);
+        printf("B. %s \n", choceQuestions[i]->question->answerB);
+        printf("C. %s \n", choceQuestions[i]->question->answerC);
+        printf("D. %s \n", choceQuestions[i]->question->answerD);
 
-        if(questions[i]->question->joker1 == false){
+        if(choceQuestions[i]->question->joker1 == false){
             printf("1. 50/50 \n");
         }
-        if(questions[i]->question->joker2 == false){
+        if(choceQuestions[i]->question->joker2 == false){
             printf("2. Ask a friend for help \n");
         }
-        if(questions[i]->question->joker3 == false){
+        if(choceQuestions[i]->question->joker3 == false){
             printf("3. Ask the audience for help \n");
         }
 
         scanf("%d", &choice);
 
-        if(questions[i]->question->joker2 == false && choice == 1){
-            polovin(questions[i]->question);
+        if(choceQuestions[i]->question->joker2 == false && choice == 1){
+            polovin(choceQuestions[i]->question);
         }
-        else if(questions[i]->question->joker2 == false && choice == 2){
-            helpFromFriend(questions[i]->question);
+        else if(choceQuestions[i]->question->joker2 == false && choice == 2){
+            helpFromFriend(choceQuestions[i]->question);
         }
-        else if(questions[i]->question->joker3 == false && choice == 3){
-            helpFromPublic(questions[i]->question);
+        else if(choceQuestions[i]->question->joker3 == false && choice == 3){
+            helpFromPublic(choceQuestions[i]->question);
         }
         else if(choice == 65 || choice == 97){
-            if(questions[i]->question->correctAnswer == 'A'){
+            if(choceQuestions[i]->question->correctAnswer == 'A'){
                 printf("Correct!\n");
             }
         }
         else if(choice == 66 || choice == 98){
-            if(questions[i]->question->correctAnswer == 'B'){
+            if(choceQuestions[i]->question->correctAnswer == 'B'){
                 printf("Correct!\n");
             }
         }
         else if(choice == 67 || choice == 99){
-            if(questions[i]->question->correctAnswer == 'C'){
+            if(choceQuestions[i]->question->correctAnswer == 'C'){
                 printf("Correct!\n");
             }
         }
         else if(choice == 68 || choice == 100){
-            if(questions[i]->question->correctAnswer == 'D'){
+            if(choceQuestions[i]->question->correctAnswer == 'D'){
                 printf("Correct!\n");
             }
         }else{
@@ -327,8 +327,9 @@ void startGame(){
     return;
 }
 
-struct Node **chose10Questions(struct Node **questions, struct Node **chosenQuestions){
+struct Node **chose10Questions(struct Node **questions){
     int randNum;
+    struct Node **chosenQuestions = malloc(sizeof(struct Node*) * 10);
     srand(time(0));
     for(int j = 0; j <10; j++){
         randNum = rand() % 5;
