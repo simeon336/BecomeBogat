@@ -3,6 +3,59 @@
 #include <string.h>
 #include <ctype.h>
 
+void tablePrinter(char table[26][26]){
+       for(int i = 0; i < 26; i++){
+        for(int j = 0; j < 26; j++){
+           if(j < 25){
+               printf("%c", table[i][j]);
+           }else{
+               printf("%c\n", table[i][j]);
+           }
+        }
+    } 
+}
+
+
+void TableMaker(char table[26][26]){
+    char start = 'a';
+    for(int i = 0; i < 26; ++i){
+        for(int j = 0; j < 26; j++){
+            table[i][j] = (i + j + 1) % 26 + start;
+        }
+    }
+
+}
+
+char* cypher(char table[26][26], char* text, char* key){
+    int len = strlen(text);
+    char* cyphered = malloc(sizeof(char)*len);
+
+    for(int i = 0; i < len; i++){
+        int key_index = i % strlen(key);
+        int column = text[i] - 'a';
+        int row = key[key_index] - 'a';
+        cyphered[i] = table[row][column];
+
+    }
+
+    return cyphered;
+}
+
+char *decypher(char table[26][26], char *cypher, char *key){
+    int len = strlen(cypher);
+    char *decyphered = malloc(sizeof(char)*len);
+
+    for(int i = 0; i < len; i++){
+        int key_index = i % strlen(key);
+        int offset = key[key_index] - 'a' + 1;
+        int AsciiChar = cypher[i] - 'a';
+        decyphered[i] = (AsciiChar - offset + 26) % 26 + 'a';
+    }
+
+    return decyphered;
+}
+
+
 void addQuestion(struct Node **questions, Question *currentQuestion){
         struct Node *node = malloc(sizeof(struct Node));
         node->next = NULL;
@@ -27,6 +80,48 @@ struct Node **initHashTable(){
     return questions;  
 }
 
+char shiftChar(char c){
+    c += 6;
+    return c;
+}
+
+char unshiftChar(char c){
+    c -= 6;
+    return c;
+}
+
+Question *cryptoQuestion(Question *question){
+    Question *currentQuestion = malloc(sizeof(Question));
+    char table[26][26] = {0};
+    TableMaker(table);
+    char key[] = "grec";
+    currentQuestion->difficulty = question->difficulty;
+    strcpy(currentQuestion->question, cypher(table, question->question, key));
+    strcpy(currentQuestion->answerA, cypher(table, question->answerA, key));
+    strcpy(currentQuestion->answerB, cypher(table, question->answerB, key));
+    strcpy(currentQuestion->answerC, cypher(table, question->answerC, key));
+    strcpy(currentQuestion->answerD, cypher(table, question->answerD, key));
+    currentQuestion->correctAnswer = shiftChar(question->correctAnswer);
+
+    return currentQuestion;
+}
+
+Question *decypherQuestion(Question *question){
+    Question *currentQuestion = malloc(sizeof(Question));
+    char table[26][26] = {0};
+    TableMaker(table);
+    char key[] = "grec";
+    currentQuestion->difficulty = question->difficulty;
+    strcpy(currentQuestion->question, decypher(table, question->question, key));
+    strcpy(currentQuestion->answerA, decypher(table, question->answerA, key));
+    strcpy(currentQuestion->answerB, decypher(table, question->answerB, key));
+    strcpy(currentQuestion->answerC, decypher(table, question->answerC, key));
+    strcpy(currentQuestion->answerD, decypher(table, question->answerD, key));
+    currentQuestion->correctAnswer = unshiftChar(question->correctAnswer);
+    
+    return currentQuestion;
+}
+
 void writeQuestionToFile(Question *question, FILE *fp){
     fprintf(fp, "%d\n", question->difficulty);
     fprintf(fp, "%s\n", question->question);
@@ -48,7 +143,7 @@ bool writeToFile(struct Node **questions, char* fileName){
     for(int i = 0; i < 10; i++){
         struct Node *currentNode = questions[i];
         while(currentNode != NULL){
-            writeQuestionToFile(currentNode->question, fp);
+            writeQuestionToFile(cryptoQuestion(currentNode->question), fp);
             currentNode = currentNode->next;
         }
     }
@@ -108,7 +203,7 @@ struct Node **readQuestions(char *fileName){
         removeNewLine(correctAnswer);
         currentQuestion->correctAnswer = correctAnswer[0];
 
-        addQuestion(questions, currentQuestion);
+        addQuestion(questions, decypherQuestion(currentQuestion));
     }
     fclose(fp);
     return questions;
@@ -184,4 +279,3 @@ void printQuestions(struct Node **questions){
     }
 
 }
-
