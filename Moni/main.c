@@ -11,7 +11,7 @@ int main(){
     
     char fileName[] = "questions.txt";
 
-    int numOfQuestions = 2;
+ 
     // Question *questions = malloc(sizeof(Question)*numOfQuestions);
     // enterQuestion(questions, i);
     // enterQuestion(questions, i);
@@ -19,11 +19,10 @@ int main(){
     // struct Node **questions = readQuestions(fileName);
     // printQuestions(questions);
     struct Node **questions = initHashTable();
-    Question *q1 = enterQuestion();
-    Question *q2 = enterQuestion();
-    addQuestion(questions, q1);
-    addQuestion(questions, q2);
+    questions = readQuestions(fileName);
+    // Question *q1 = enterQuestion();
+   // addQuestion(questions, q1);
+    //writeToFile(questions, fileName);
     printQuestions(questions);
-    writeToFile(questions, fileName);
 
 }

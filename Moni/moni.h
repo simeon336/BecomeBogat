@@ -20,6 +20,10 @@ struct Node{
     Question *question;
     struct Node *next;
 };
+void tablePrinter(char table[26][26]);
+void TableMaker(char table[26][26]);
+char* cypher(char table[26][26], char* text, char* key);
+char *decypher(char table[26][26], char *cypher, char *key);
 struct Node **initHashTable();
 bool writeToFile(struct Node **questions, char* fileName);
 void writeQuestionToFile(Question *question, FILE *fp);
@@ -29,3 +33,7 @@ void removeNewLine(char* string);
 struct Node **readQuestions(char *fileName);
 void printQuestion(Question *question);
 void printQuestions(struct Node **questions);
+Question *cryptoQuestion(Question *question);
+char shiftChar(char c);
+Question *decypherQuestion(Question *question);
+char unshiftChar(char c);
